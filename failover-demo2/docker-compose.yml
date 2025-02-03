@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # Load Generators
@@ -299,16 +299,23 @@ services:
     image: grafana/grafana:latest
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
+
+
+      - ./grafana/dashboards:/etc/grafana/dashboards       # Mount the dashboards JSON directory
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources  # Mount the data source configuration
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DASHBOARDS_JSON_ENABLED=true
     ports:
       - "3000:3000"
     networks:
       - monitoring
     depends_on:
       - prometheus
+
+
 
   node-exporter:
     image: prom/node-exporter:latest
